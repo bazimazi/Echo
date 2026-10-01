@@ -141,3 +141,8 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Godot generated state and local exports
+.godot/
+exports/
+export_credentials.cfg

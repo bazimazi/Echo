@@ -1,0 +1,117 @@
+[gd_scene format=3]
+
+[node name="TestRoom" type="Node2D"]
+
+[node name="Spawn" type="Marker2D" parent="."]
+position = Vector2(144, 530)
+
+[node name="Floor" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="Floor"]
+polygon = PackedVector2Array(0, 560, 1920, 560, 1920, 720, 0, 720)
+
+[node name="Visual" type="Polygon2D" parent="Floor"]
+polygon = PackedVector2Array(0, 560, 1920, 560, 1920, 720, 0, 720)
+color = Color(0.24, 0.26, 0.29, 1)
+
+[node name="FloorEdge" type="Line2D" parent="."]
+points = PackedVector2Array(0, 560, 1920, 560)
+width = 3.0
+default_color = Color(0.53, 0.57, 0.59, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="LeftWall"]
+polygon = PackedVector2Array(0, 0, 32, 0, 32, 560, 0, 560)
+
+[node name="Visual" type="Polygon2D" parent="LeftWall"]
+polygon = PackedVector2Array(0, 0, 32, 0, 32, 560, 0, 560)
+color = Color(0.24, 0.26, 0.29, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="RightWall"]
+polygon = PackedVector2Array(1888, 0, 1920, 0, 1920, 560, 1888, 560)
+
+[node name="Visual" type="Polygon2D" parent="RightWall"]
+polygon = PackedVector2Array(1888, 0, 1920, 0, 1920, 560, 1888, 560)
+color = Color(0.24, 0.26, 0.29, 1)
+
+[node name="StepOne" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="StepOne"]
+polygon = PackedVector2Array(400, 480, 540, 480, 540, 504, 400, 504)
+
+[node name="Visual" type="Polygon2D" parent="StepOne"]
+polygon = PackedVector2Array(400, 480, 540, 480, 540, 504, 400, 504)
+color = Color(0.42, 0.45, 0.48, 1)
+
+[node name="StepTwo" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="StepTwo"]
+polygon = PackedVector2Array(600, 400, 740, 400, 740, 424, 600, 424)
+
+[node name="Visual" type="Polygon2D" parent="StepTwo"]
+polygon = PackedVector2Array(600, 400, 740, 400, 740, 424, 600, 424)
+color = Color(0.42, 0.45, 0.48, 1)
+
+[node name="StepThree" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="StepThree"]
+polygon = PackedVector2Array(800, 320, 1000, 320, 1000, 344, 800, 344)
+
+[node name="Visual" type="Polygon2D" parent="StepThree"]
+polygon = PackedVector2Array(800, 320, 1000, 320, 1000, 344, 800, 344)
+color = Color(0.42, 0.45, 0.48, 1)
+
+[node name="LowCeiling" type="StaticBody2D" parent="."]
+collision_mask = 2
+
+[node name="Collision" type="CollisionPolygon2D" parent="LowCeiling"]
+polygon = PackedVector2Array(1220, 400, 1480, 400, 1480, 440, 1220, 440)
+
+[node name="Visual" type="Polygon2D" parent="LowCeiling"]
+polygon = PackedVector2Array(1220, 400, 1480, 400, 1480, 440, 1220, 440)
+color = Color(0.34, 0.37, 0.40, 1)
+
+[node name="Intro" type="Label" parent="."]
+offset_left = 96.0
+offset_top = 246.0
+theme_override_colors/font_color = Color(0.67, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 18
+text = "01 / FIND YOUR FOOTING\n\nEvery echo begins with a first step."
+
+[node name="JumpHint" type="Label" parent="."]
+offset_left = 370.0
+offset_top = 365.0
+theme_override_font_sizes/font_size = 16
+text = "SPACE / JUMP\nClimb the three platforms."
+
+[node name="Summit" type="Label" parent="."]
+offset_left = 800.0
+offset_top = 258.0
+theme_override_font_sizes/font_size = 16
+text = "A DIFFERENT PERSPECTIVE"
+
+[node name="CeilingHint" type="Label" parent="."]
+offset_left = 1220.0
+offset_top = 348.0
+theme_override_font_sizes/font_size = 16
+text = "MIND YOUR HEAD"
+
+[node name="EndMarker" type="Line2D" parent="."]
+points = PackedVector2Array(1720, 560, 1720, 450, 1770, 450)
+width = 3.0
+default_color = Color(0.66, 0.77, 0.72, 1)
+
+[node name="EndHint" type="Label" parent="."]
+offset_left = 1580.0
+offset_top = 280.0
+theme_override_font_sizes/font_size = 18
+text = "FOUNDATION COMPLETE\n\nExplore. Jump. Start again.\nR / Return to the beginning"
