@@ -1,0 +1,76 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Served at https://<GAME>.bazimazi.games
+  GAME: echo
+  GODOT_VERSION: 4.5-stable
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot
+        id: godot-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-web-nothreads
+
+      - name: Download Godot and the web export template
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot/templates && cd ~/godot
+          base="https://github.com/godotengine/godot/releases/download/$GODOT_VERSION"
+          curl -fsSL --retry 3 -o godot.zip "$base/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q godot.zip && mv "Godot_v${GODOT_VERSION}_linux.x86_64" godot && rm godot.zip
+          curl -fsSL --retry 3 -o templates.tpz "$base/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -qj templates.tpz templates/web_nothreads_release.zip templates/version.txt -d templates
+          rm templates.tpz
+
+      - name: Install the export template
+        run: |
+          dir="$HOME/.local/share/godot/export_templates/${GODOT_VERSION/-/.}"
+          mkdir -p "$dir" && cp ~/godot/templates/* "$dir/"
+
+      - name: Import assets
+        run: ~/godot/godot --headless --path . --import
+
+      - name: Test
+        run: ~/godot/godot --headless --path . --script tests/run_tests.gd
+
+      - name: Export for the web
+        run: |
+          mkdir -p dist
+          ~/godot/godot --headless --path . --export-release Web dist/index.html
+          # Godot can exit 0 after a failed export, so check the output exists.
+          test -s dist/index.html && test -s dist/index.wasm && test -s dist/index.pck
+
+      - name: Deploy to https://echo.bazimazi.games
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ vars.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ vars.DEPLOY_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          release="$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}"
+          ssh "deploy@$HOST" mkdir -p "/var/www/games/$GAME/releases"
+          rsync -az --chmod=D755,F644 dist/ "deploy@$HOST:/var/www/games/$GAME/releases/$release/"
+          ssh "deploy@$HOST" bazimazi-game-activate "$GAME" "$release"

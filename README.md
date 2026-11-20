@@ -8,6 +8,10 @@ walking, jumping, gravity, floor/wall/ceiling collision, three climbable
 platforms, a following camera, restart and a keyboard/mouse pause menu.
 Ghost recording, enemies, puzzles and saves are intentionally not implemented.
 
+**Play it in the browser at <https://echo.bazimazi.games>.** Every push to
+`main` exports the `Web` preset (single-threaded, so no cross-origin isolation
+headers are needed) and deploys it; see `.github/workflows/deploy.yml`.
+
 ## Open and run
 
 1. Install the standard [Godot 4.5 editor](https://godotengine.org/download/archive/4.5-stable/)
